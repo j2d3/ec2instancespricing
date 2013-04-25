@@ -23,6 +23,15 @@
 #
 import urllib2
 import argparse
+import sqlite3 as lite
+import sys
+
+con = lite.connect('aws.db')
+
+with con:
+
+    cur = con.cursor()
+
 try:
 	import simplejson as json
 except ImportError:
@@ -96,7 +105,7 @@ EC2_REGIONS_API_TO_JSON_NAME = {
 INSTANCES_ON_DEMAND_URL = "http://aws.amazon.com/ec2/pricing/pricing-on-demand-instances.json"
 INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/ri-light-linux.json"
 INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/ri-light-mswin.json"
-INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/ri-medium-linux.json"
+INSTANCES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/ri-medium-linux.json"
 INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/ri-medium-mswin.json"
 INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/ri-heavy-linux.json"
 INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/ri-heavy-mswin.json"
@@ -104,7 +113,7 @@ INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pr
 INSTANCES_RESERVED_OS_TYPE_BY_URL = {
 	INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL : "linux",
 	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL : "mswin",
-	INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL : "linux",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL : "linux",
 	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL : "mswin",
 	INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL : "linux",
 	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL  : "mswin"
@@ -113,7 +122,7 @@ INSTANCES_RESERVED_OS_TYPE_BY_URL = {
 INSTANCES_RESERVED_UTILIZATION_TYPE_BY_URL = {
 	INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL : "light",
 	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL : "light",
-	INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL : "medium",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL : "medium",
 	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL : "medium",
 	INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL : "heavy",
 	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL  : "heavy"	
@@ -175,7 +184,7 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 	urls = [
 		INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL,
 		INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL,
-		INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL,
+		INSTANCES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL,
 		INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL,
 		INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL,
 		INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL 
@@ -423,3 +432,4 @@ if __name__ == "__main__":
 				for it in r["instanceTypes"]:
 					for term in it["prices"]:
 						print "%s,%s,%s,%s,%s,%s,%s" % (region_name, it["type"], it["os"], it["utilization"], term, none_as_string(it["prices"][term]["hourly"]), none_as_string(it["prices"][term]["upfront"]))
+
